@@ -13,6 +13,9 @@ ____
 ____
 
 
+I'm terrible at writing documentation, so gif:
+![](https://raw.githubusercontent.com/joonaspaakko/Indesign-batch-import-and-place-images-by-the-number-in-filename/master/Batch%20import%20%26%20place%20images%20by%20the%20number%20in%20filename.gif)
+
 # Batch import & place images by the number in filename.jsx
 
 The script places all files from the input folder and its sub folders into the document based on the number prefix in the filename. For example: `input folder/100 my file.pdf` is placed on the page `100`. The regex for finding this number is customizable. This is the minimal setup. 
