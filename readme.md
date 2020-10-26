@@ -1,10 +1,10 @@
 - [Batch import & place images by the number in filename.jsx](#batch-import--place-images-by-the-number-in-filenamejsx)
   - [Examples](#examples)
-  - [Basic usage](#basic-usage)
+  - [Basic usage](#basic-usage-(minimal-setup))
   - [Default options](#default-options)
   - [Master page templates (position & size)](#master-page-templates-position--size)
     - [Using templates (position)](#using-templates-position)
-      - [Using template divisions](#using-template-divisions)
+    - [Using template divisions](#using-template-divisions)
     - [Frame fitting (size)](#frame-fitting-size)
   - [Graphic frame styling](#graphic-frame-styling)
   - [Automatic master page template and division layer creation](#automatic-master-page-template-and-division-layer-creation)
@@ -28,17 +28,19 @@ I've done a partial and a complete re-write of this script multiple times over s
 
 The examples folder in the repo has `idml` files that you can just open and run the script on.
 
-## Basic usage
+## Basic usage (minimal setup)
 
 1. Make sure your files have a number prefix:
-  - `input folder/1 file.pdf`
-  - `input folder/02 file.pdf`
-  - `input folder/03 file.pdf`
-  - `input folder/10 file.pdf`
+	- ```input folder/1 file.pdf
+		input folder/02 file.pdf
+		input folder/03 file.pdf
+		input folder/10 file.pdf
 2. Run the script
 3. Select input folder
 
-In this scenario input files would end up on pages `1,2,3,10`. Also, they'd all be centered in the document and not resized. Read more about setting the position and size below: [Master page templates (position & size)](#master-page-templates-position--size).
+In this very basic scenario input files would end up on pages `1,2,3,10`, they'd all be centered in the document and not resized. You can read about setting the position and size below: [Master page templates (position & size)](#master-page-templates-position--size).
+
+> The `Examples` folders has some more advanced examples in it.
 
 ## Default options
 
@@ -61,9 +63,9 @@ var customization = {
 
 ## Master page templates (position & size)
 
-You can set position and size by using `master pages` as templates. Basically you draw a graphic frame where you want the images to land and in the file name or folder name use an identifier that determines which template the images will use. You don't need to use a templates if you want all images to center themselves on the page and to use the original size.
+You can set position and size by using `master pages` as templates. Basically you draw a graphic frame in the master page where you want the images to land and in the file name or folder name use an identifier that determines which template the image(s) will use. You don't need to use a templates if you want all images to center themselves on the page and to use the original size.
 
-> If you run the script without any master page templates or division layers, the script will offer to create them automatically. It will also inform you if any files are missing page numbers, which you can choose to temporarily ignore, in which case they won't be placed.
+> If you run the script without any master page templates or division layers in the indesign document, the script will offer to create them automatically. It will also inform you if any files are missing page numbers, which you can choose to temporarily ignore, in which case they won't be placed.
 
 ### Using templates (position)
 
@@ -72,13 +74,16 @@ You can set position and size by using `master pages` as templates. Basically yo
 These templates are not used as traditional master pages, they contain graphic frame(s) that are copied over to the page(s) as needed, so they don't ovewrite the page master page or anything.
 
 1. Put a template identifier `@` in the filename or any of it's parent folders (up to the input folder).
+	- You can change the identifier regex in the script file, if needed.
 	- The closest template name is used.
-	- By default it and everything that follows is matched
-		- `input folder/sub folder @A-Master/01 file.pdf` - **Template:** `@A-Master`
-		- `input folder @-template-1/sub folder/02 file.pdf` - **Template:** `@-template-1`
-		- `input folder/sub folder/02 file.pdf` - **Template:** `N/A` - File is centered on the page.
-		- `input folder/03 file @-template-2.pdf` - **Template:** `@-template-2`
-			- In files the extension is always omitted
+	- By default the identifier and everything that follows is matched
+		- |                       files                      | template                                          |
+		  |--------------------------------------------------|---------------------------------------------------|
+		  | input folder/sub folder @A-Master/01 file.pdf    | @A-Master                                         |
+		  | input folder @-template-1/sub folder/02 file.pdf | @-template-1                                      |
+		  | input folder/sub folder/02 file.pdf              | N/A <small>(file is centered on the page)</small> |
+		  | input folder/03 file @-template-2.pdf            | @-template-2                                      |
+		- In files the extension is always omitted when the script looks for the template name
 2. Make new master page(s) that correspond the template names used in the input folder
 	- You can make these manually, but the easier way is to run the script once and let the script create the needed master page templates
 	- Template names match the full master page name and they always include a prefix that is separated from the rest of the name with a dash: Template: `@A-Master` → Master page prefix: `@A` Master page name: `Master`
@@ -90,16 +95,20 @@ These templates are not used as traditional master pages, they contain graphic f
 
 > Optional
 
-With divisions you can set multiple positions in a single master page template. The gist of it is, you make multiple graphic frames inside the master page and put them inside layers to tell the files which division/graphic frame to use and you need to use a division identifier on the files or folders to.
+With divisions you can set multiple positions in a single master page template. The gist of it is, you make multiple graphic frames inside the master page and put them inside layers to tell the files which division/graphic frame to use. The layer name must match teh division name in the file or folder.
 
 0. Division always needs to have a parent template
 1. Just like templates, divisions use the `#` identifier in the filename or parent folders.
+	- You can change the identifier regex in the script file, if needed.
 	- The closest division name is used.
-	- By default it and everything that follows is matched
-		- `input folder/sub folder @A-Master/01 file #division-1.pdf` - **Template:** `@A-Master` **Division:** `#division-1`
-		- `input folder @-template-1/sub folder #division-2/02 file.pdf` - **Template:** `@-template-1`**Division:** `#division-2`
-		- `input folder/sub folder/02 file.pdf` - **Template:** `N/A` - **Division:** `N/A` - File is centered on the page.
-		- `input folder @-template-2/03 file #division-1.pdf` - **Template:** `@-template-2` **Division:** `#division-1`
+	- By default the identifier and everything that follows is matched
+		- |                             files                            | template     | division    |
+		  |--------------------------------------------------------------|--------------|-------------|
+		  | input folder/sub folder @A-Master/01 file #division-1.pdf    | @A-Master    | #division-1 |
+		  | input folder @-template-1/sub folder #division-2/02 file.pdf | @-template-1 | #division-2 |
+		  | input folder/sub folder/02 file.pdf                          | N/A          | N/A         |
+		  | input folder @-template-2/03 file #division-1.pdf            | @-template-2 | #division-1 |
+
 2. Make new layer(s) that correspond the division names used in the input folder
 	- You can make these manually, but the easier way is to run the script once and let it create the needed division layers
 3. Move graphic frames to each division layer as needed.
@@ -111,7 +120,7 @@ With divisions you can set multiple positions in a single master page template. 
 
 By default the files use their original size, but when they honor the fitting options of their graphic frame. So before running the script you can prepare the graphic frames to for eaxample fit all graphics proportionally. You do it by selecting the graphic frame(s) on the master page and fiddle with the options at: `Object > Fitting > Frame fitting options...` or `Right click on the document > Fitting > Frame fitting options...`. In here you also have some control over the image position within the graphic frame. 
 
-> FYI: `Window > Styles > Object styles...` has frame fitting options too.
+> FYI: `Window > Styles > Object styles...` has the same `Frame fitting options` too.
 
 ![](frame-fitting-options.png)
 
@@ -119,7 +128,7 @@ By default the files use their original size, but when they honor the fitting op
 
 > Optional
 
-Styling background color and borders in the template graphic frames carries over to the page when the file is placed, as long as the image doesn't cover it, but you'll likely want to use a transparent background and borders.
+Since the graphic frame is copied over to the destination page as is. Pretty much any styling (`color fill`, `stroke`) should carry over to the page when the file is placed.
 
 ## Automatic master page template and division layer creation
 
