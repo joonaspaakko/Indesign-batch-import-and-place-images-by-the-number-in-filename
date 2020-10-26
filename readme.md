@@ -1,6 +1,6 @@
 - [Batch import & place images by the number in filename.jsx](#batch-import--place-images-by-the-number-in-filenamejsx)
   - [Examples](#examples)
-  - [Basic usage](#basic-usage-(minimal-setup))
+  - [Basic usage (minimal setup)](#basic-usage-minimal-setup)
   - [Default options](#default-options)
   - [Master page templates (position & size)](#master-page-templates-position--size)
     - [Using templates (position)](#using-templates-position)
